@@ -1,15 +1,15 @@
 module MB.Data.ValueStorage where
 
 
-import MB.Data.Primitive
-import MB.Data.Axis
+import           MB.Data.Primitive
+import           MB.Data.Axis
 
-import Data.IntMap (IntMap)
-import qualified Data.IntMap as I
+import           Data.IntMap                    ( IntMap )
+import qualified Data.IntMap                   as I
 
-import Data.Maybe
-import Data.List (sortOn)
-import Data.Ord (comparing)
+import           Data.Maybe
+import           Data.List                      ( sortOn )
+import           Data.Ord                       ( comparing )
 
 
 -- TODO: the data definition should guarantee that every leaf's depth are same
@@ -18,17 +18,17 @@ type Variable = Maybe Value
 type ValueStorage = RMap Variable
 
 
-getValues :: ValueStorage -> Keys -> [(Key,Maybe Value)]
+getValues :: ValueStorage -> Keys -> [(Key,Variable)]
 getValues vs = map (\k -> (k, getValue vs k))
 
 -- NOTE: Exclude input data checker to getValue'
-getValue :: ValueStorage -> Key -> Maybe Value
+getValue :: ValueStorage -> Key -> Variable
 getValue vs key = getValueSub condensedKey vs
   where
     sortedKey = sortOn fst key
     condensedKey = map snd sortedKey
 
-getValue' :: ValueStorage -> Key -> Maybe Value
+getValue' :: ValueStorage -> Key -> Variable
 getValue' vs key =
   if isGood
     then getValue vs sortedKey
