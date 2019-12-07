@@ -7,13 +7,15 @@ import MB.Data.Axis
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as I
 
+import Data.Maybe
 import Data.List (sortOn)
 import Data.Ord (comparing)
 
 
 -- TODO: the data definition should guarantee that every leaf's depth are same
 data RMap a = RM (IntMap (RMap a)) | IM (IntMap a)
-type ValueStorage = RMap Value
+type Variable = Maybe Value
+type ValueStorage = RMap Variable
 
 
 getValues :: ValueStorage -> Keys -> [(Key,Maybe Value)]
@@ -38,10 +40,10 @@ getValue' vs key =
     checker [_] = True
     checker keys@((x,_):(y,_):zs) = (x + 1 /= y) || checker (tail keys)
 
-getValueSub :: [AxisIndex] -> ValueStorage -> Maybe Value
+getValueSub :: [AxisIndex] -> ValueStorage -> Variable
 getValueSub [] _ = error "[ERROR]<getValueSub>: Can't reach!"
 getValueSub [_] (RM _) = error "[ERROR]<getValueSub>: The Key have too less selector"
-getValueSub [idx] (IM im) = I.lookup idx im
+getValueSub [idx] (IM im) = fromJust $ I.lookup idx im
 getValueSub _ (IM _) = error "[ERROR]<getValueSub>: The Key have too much selector"
 getValueSub (idx:rest) (RM rm) = I.lookup idx rm >>= getValueSub rest
 
