@@ -48,6 +48,14 @@ getValueSub _ (IM _) = error "[ERROR]<getValueSub>: The Key have too much select
 getValueSub (idx:rest) (RM rm) = I.lookup idx rm >>= getValueSub rest
 
 
+setValue :: ValueStorage -> Key -> Variable -> ValueStorage
+setValue vs key variable = setValueSub vs key
+  where
+    setValueSub :: ValueStorage -> Key -> ValueStorage
+    setValueSub (IM im) [(_,cIdx)] = IM $ I.insert cIdx variable im
+    setValueSub (RM rm) ((_,cIdx):rest) = RM $ I.insert cIdx newMap rm
+      where
+        newMap = setValueSub (fromJust $ I.lookup cIdx rm) rest
 
 -- NOTE: Add a Variable for each selected Axis-map
 addColumn :: ValueStorage -> AxisIndex -> ValueStorage
