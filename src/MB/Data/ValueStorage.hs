@@ -48,8 +48,8 @@ getValueSub _ (IM _) = error "[ERROR]<getValueSub>: The Key have too much select
 getValueSub (idx:rest) (RM rm) = I.lookup idx rm >>= getValueSub rest
 
 
-removeAxis :: ValueStorage -> AxisIndex -> ValueStorage
-removeAxis vs idx = vs
+deleteAxis :: ValueStorage -> AxisIndex -> ValueStorage
+deleteAxis vs idx = vs
 -- TODO:
 -- * Convert every sub-tree as lists
 --   NOTE: Need to make a mixed key - not easy problem
@@ -57,5 +57,5 @@ removeAxis vs idx = vs
 -- * Rebuild a tree from the list
 
 -- TODO: Add RemovingMode as a argument
-removeAxisSmartly :: ValueStorage -> AxisIndex -> ValueStorage
-removeAxisSmartly vs idx = vs
+deleteAxisSmartly :: ValueStorage -> AxisIndex -> ValueStorage
+deleteAxisSmartly vs idx = vs
