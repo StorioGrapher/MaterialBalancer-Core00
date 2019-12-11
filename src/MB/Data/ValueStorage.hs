@@ -13,7 +13,7 @@ import           Data.Ord                       ( comparing )
 
 
 -- TODO: the data definition should guarantee that every leaf's depth are same
-data RMap a = RM (IntMap (RMap a)) | IM (IntMap a)
+data RMap a = RM (IntMap (RMap a)) | IM (IntMap a) deriving Show
 type Variable = Maybe Value
 type ValueStorage = RMap Variable
 
@@ -81,6 +81,10 @@ blankTree (RM rm) = RM $ I.map blankTree rm
 getColumnSizes :: RMap a -> [Int]
 getColumnSizes (IM im) = [I.size im]
 getColumnSizes (RM rm) = (I.size rm):(getColumnSizes . snd . I.findMin $ rm)
+
+addAxis :: ValueStorage -> ValueStorage
+addAxis vs = vs
+
 deleteAxis :: ValueStorage -> AxisIndex -> ValueStorage
 deleteAxis vs idx = vs
 -- TODO:

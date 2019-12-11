@@ -11,6 +11,15 @@ import MB.Data.ValueStorage
 
 type TheTable = (AxisMap, ColumnsMap, ValueStorage)
 
+getAxisMap :: TheTable -> AxisMap
+getAxisMap (am,_,_) = am
+
+getColumnsMap :: TheTable -> ColumnsMap
+getColumnsMap (_,cm,_) = cm
+
+getValueStorage :: TheTable -> ValueStorage
+getValueStorage (_,_,vs) = vs
+
 addColumnAt :: AxisIndex -> ColumnName -> TheTable -> (ColumnIndex, TheTable)
 addColumnAt axisIdx columnName theTable = (0,theTable)
 
