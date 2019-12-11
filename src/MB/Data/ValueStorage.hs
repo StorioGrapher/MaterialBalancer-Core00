@@ -48,6 +48,31 @@ getValueSub _ (IM _) = error "[ERROR]<getValueSub>: The Key have too much select
 getValueSub (idx:rest) (RM rm) = I.lookup idx rm >>= getValueSub rest
 
 
+
+-- NOTE: Add a Variable for each selected Axis-map
+addColumn :: ValueStorage -> AxisIndex -> ValueStorage
+addColumn vs aIdx = advanceUntilTargetAxis 0 vs
+  where
+    -- Step: Get column size of each Axis
+    columnSizes = getColumnSizes vs
+    axesSize = length columnSizes
+    -- Step: Advance until the targeted Axis
+    advanceUntilTargetAxis :: AxisIndex -> ValueStorage -> ValueStorage
+    advanceUntilTargetAxis idx rIM@(IM im) = addNewColumn rIM undefined -- FIXME: Try to remove `undefined`
+    advanceUntilTargetAxis idx rRM@(RM rm)
+      | idx < aIdx = RM $ I.map (advanceUntilTargetAxis (idx+1)) rm
+      | otherwise = addNewColumn rRM (blankTree . snd . I.findMin $ rm) -- TODO: This can be generated only one-time by using columnSizes
+    addNewColumn :: ValueStorage -> ValueStorage -> ValueStorage
+    addNewColumn (IM im) _ = IM $ I.insert (I.size im) Nothing im
+    addNewColumn (RM rm) bst = RM $ I.insert (I.size rm) bst rm
+
+blankTree :: ValueStorage -> ValueStorage
+blankTree (IM im) = IM $ I.map (\_ -> Nothing) im
+blankTree (RM rm) = RM $ I.map blankTree rm
+
+getColumnSizes :: RMap a -> [Int]
+getColumnSizes (IM im) = [I.size im]
+getColumnSizes (RM rm) = (I.size rm):(getColumnSizes . snd . I.findMin $ rm)
 deleteAxis :: ValueStorage -> AxisIndex -> ValueStorage
 deleteAxis vs idx = vs
 -- TODO:
