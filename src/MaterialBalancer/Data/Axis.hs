@@ -1,7 +1,7 @@
-module MB.Data.Axis where
+module MaterialBalancer.Data.Axis where
 
 
-import           MB.Data.Primitive
+import           MaterialBalancer.Data.Primitive
 
 import           Data.IntMap                    ( IntMap )
 import qualified Data.IntMap                   as I

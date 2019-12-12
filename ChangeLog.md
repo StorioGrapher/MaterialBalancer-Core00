@@ -23,6 +23,11 @@ Changelog for MaterialBalancer
 ### Fixed
 
 
+## 0.0.2.0 -- 2019-12-12
+
+### Changed (Modified)
+* Change module name from `MB.*` to `MaterialBalancer.*`
+
 ## 0.0.1.0 -- 2019-12-04
 
 ### Added

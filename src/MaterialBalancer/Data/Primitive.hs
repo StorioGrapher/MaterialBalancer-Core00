@@ -1,4 +1,4 @@
-module MB.Data.Primitive where
+module MaterialBalancer.Data.Primitive where
 
 import Data.Text (Text)
 

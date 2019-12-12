@@ -1,12 +1,12 @@
 -- Note: TheTable module provides abstract interface that operate Axis, Columns and ValueStorage with single function
 
-module MB.Data.TheTable where
+module MaterialBalancer.Data.TheTable where
 
 
-import MB.Data.Primitive
-import MB.Data.Axis
-import MB.Data.Column
-import MB.Data.ValueStorage
+import MaterialBalancer.Data.Primitive
+import MaterialBalancer.Data.Axis
+import MaterialBalancer.Data.Column
+import MaterialBalancer.Data.ValueStorage
 
 
 type TheTable = (AxisMap, ColumnsMap, ValueStorage)
