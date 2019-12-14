@@ -16,45 +16,48 @@ type AxisMap = IntMap AxisName
 getAxisName :: AxisMap -> AxisIndex -> AxisName
 getAxisName am idx = fromJust $ I.lookup idx am
 
-getAxisName' :: AxisMap -> AxisIndex -> AxisName
-getAxisName' am idx =
+getAxisName :: AxisIndex -> AxisMap -> AxisName
+getAxisName idx am = fromJust $ I.lookup idx am
+
+getAxisName' :: AxisIndex -> AxisMap -> AxisName
+getAxisName' idx am =
   if isJust mAxisName
-    then getAxisName am idx
+    then getAxisName idx am
     else error $ "[ERROR]<getAxisName'> No such Axis like " ++ show idx
   where
     mAxisName = I.lookup idx am
 
-addAxis :: AxisMap -> AxisName -> (AxisIndex, AxisMap)
-addAxis am name = (idx, I.insert idx name am)
+addAxis :: AxisName -> AxisMap -> (AxisIndex, AxisMap)
+addAxis name am = (idx, I.insert idx name am)
   where idx = I.size am
 
-addAxis' :: AxisMap -> AxisName -> (AxisIndex, AxisMap)
-addAxis' am name =
+addAxis' :: AxisName -> AxisMap -> (AxisIndex, AxisMap)
+addAxis' name am =
   if isExist
     then error
       "[ERROR]<addAxis'> Auto-generated Axis idx is duplicated with another exist"
-    else addAxis am name
+    else addAxis name am
   where
     idx     = I.size am
     isExist = isJust (I.lookup idx am)
 
-deleteAxis :: AxisMap -> AxisIndex -> (AxisName, AxisMap)
-deleteAxis am idx = (deletedName, I.mapKeys fixer am)
+deleteAxis :: AxisIndex -> AxisMap -> (AxisName, AxisMap)
+deleteAxis idx am = (deletedName, I.mapKeys fixer am)
   where
     deletedName = fromJust $ I.lookup idx am
     fixer prev = if prev > idx then prev - 1 else prev
 
-deleteAxis' :: AxisMap -> AxisIndex -> (AxisName, AxisMap)
-deleteAxis' am idx =
+deleteAxis' :: AxisIndex -> AxisMap -> (AxisName, AxisMap)
+deleteAxis' idx am =
   if isJust (I.lookup idx am)
-    then deleteAxis am idx
+    then deleteAxis idx am
     else error $ "[ERROR]<deleteAxis'> No such Axis like " ++ show idx
 
-changeAxisName :: AxisMap -> AxisIndex -> AxisName -> AxisMap
-changeAxisName am idx name = I.insert idx name am
+changeAxisName :: AxisIndex -> AxisName -> AxisMap -> AxisMap
+changeAxisName idx name am = I.insert idx name am
 
-changeAxisName' :: AxisMap -> AxisIndex -> AxisName -> AxisMap
-changeAxisName' am idx name =
+changeAxisName' :: AxisIndex -> AxisName -> AxisMap -> AxisMap
+changeAxisName' idx name am =
   if isJust (I.lookup idx am)
-    then changeAxisName am idx name
+    then changeAxisName idx name am
     else error $ "[ERROR]<changeAxisName'> No such Axis like " ++ show idx

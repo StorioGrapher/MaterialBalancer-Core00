@@ -18,20 +18,20 @@ type Variable = Maybe Value
 type ValueStorage = RMap Variable
 
 
-getValues :: ValueStorage -> Keys -> [(Key,Variable)]
-getValues vs = map (\k -> (k, getValue vs k))
+getValues :: Keys -> ValueStorage -> [(Key,Variable)]
+getValues keys vs = map (\k -> (k, getValue k vs)) keys
 
 -- NOTE: Exclude input data checker to getValue'
-getValue :: ValueStorage -> Key -> Variable
-getValue vs key = getValueSub condensedKey vs
+getValue :: Key -> ValueStorage -> Variable
+getValue key vs = getValueSub condensedKey vs
   where
     sortedKey = sortOn fst key
     condensedKey = map snd sortedKey
 
-getValue' :: ValueStorage -> Key -> Variable
-getValue' vs key =
+getValue' :: Key -> ValueStorage -> Variable
+getValue' key vs =
   if isGood
-    then getValue vs sortedKey
+    then getValue sortedKey vs
     else error $ "[ERROR]<getValue'>: The given Key is illegal: " ++ show key
   where
     sortedKey = sortOn fst key
@@ -48,8 +48,8 @@ getValueSub _ (IM _) = error "[ERROR]<getValueSub>: The Key have too much select
 getValueSub (idx:rest) (RM rm) = I.lookup idx rm >>= getValueSub rest
 
 
-setValue :: ValueStorage -> Key -> Variable -> ValueStorage
-setValue vs key variable = setValueSub vs key
+setValue :: Key -> Variable -> ValueStorage -> ValueStorage
+setValue key variable vs = setValueSub vs key
   where
     setValueSub :: ValueStorage -> Key -> ValueStorage
     setValueSub (IM im) [(_,cIdx)] = IM $ I.insert cIdx variable im
@@ -58,8 +58,8 @@ setValue vs key variable = setValueSub vs key
         newMap = setValueSub (fromJust $ I.lookup cIdx rm) rest
 
 -- NOTE: Add a Variable for each selected Axis-map
-addColumn :: ValueStorage -> AxisIndex -> ValueStorage
-addColumn vs aIdx = advanceUntilTargetAxis 0 vs
+addColumn :: AxisIndex -> ValueStorage -> ValueStorage
+addColumn aIdx vs = advanceUntilTargetAxis 0 vs
   where
     -- Step: Get column size of each Axis
     columnSizes = getColumnSizes vs
@@ -85,8 +85,8 @@ getColumnSizes (RM rm) = (I.size rm):(getColumnSizes . snd . I.findMin $ rm)
 addAxis :: ValueStorage -> ValueStorage
 addAxis vs = vs
 
-deleteAxis :: ValueStorage -> AxisIndex -> ValueStorage
-deleteAxis vs idx = vs
+deleteAxis :: AxisIndex -> ValueStorage -> ValueStorage
+deleteAxis idx vs = vs
 -- TODO:
 -- * Convert every sub-tree as lists
 --   NOTE: Need to make a mixed key - not easy problem
@@ -94,5 +94,5 @@ deleteAxis vs idx = vs
 -- * Rebuild a tree from the list
 
 -- TODO: Add RemovingMode as a argument
-deleteAxisSmartly :: ValueStorage -> AxisIndex -> ValueStorage
-deleteAxisSmartly vs idx = vs
+deleteAxisSmartly :: AxisIndex -> ValueStorage -> ValueStorage
+deleteAxisSmartly idx vs = vs
