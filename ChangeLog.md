@@ -27,6 +27,7 @@ Changelog for MaterialBalancer
 
 ### Changed (Modified)
 * Change module name from `MB.*` to `MaterialBalancer.*`
+* Change data manipulation function's argument order like **containers** function - for better combination
 
 ## 0.0.1.0 -- 2019-12-04
 

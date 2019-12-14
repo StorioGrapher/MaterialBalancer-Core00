@@ -21,6 +21,14 @@ dependencies:
 library:
   source-dirs: src
 
+default-extensions:
+- OverloadedStrings
+- RecordWildCards
+# -BangPatterns
+# -ViewPatterns
+# -PatternSynonyms
+# -TypeOperators
+
 executables:
   MaterialBalancer-exe:
     main:                Main.hs
