@@ -36,8 +36,9 @@ showValueStorageWithIdxSub (RM rm) depth = labeledElements preprocessed
    where
     shown = show key
     shownLen = length shown
-    header = show depth ++ "-" ++ replicate (len+1-shownLen) ' ' ++ show key ++ ": "
-    processed = map (header ++) strings
+    header = show depth ++ "=" ++ replicate (len+1-shownLen) '_' ++ show key ++ "-"
+    headerSpace = replicate (length header - 1) ' ' ++ " "
+    processed = if length strings > 0 then (header ++ (head strings)) : map (headerSpace ++) (tail strings) else []
 
 showValueStorageWithIdxSub (IM im) depth = labeledElements . I.toList $ im
  where
@@ -47,7 +48,8 @@ showValueStorageWithIdxSub (IM im) depth = labeledElements . I.toList $ im
    where
     shown = show key
     shownLen = length shown
-    header = show depth ++ "-" ++ replicate (len+1-shownLen) ' ' ++ show key ++ ": "
+    space = replicate (len+1-shownLen) '_'
+    header = (if xs == [] then "--" else "+-") ++ show depth ++ "=" ++ space ++ shown ++ ": "
 
 getDecimalLen num = getDecimalLenSub num 0
 getDecimalLenSub num acc
