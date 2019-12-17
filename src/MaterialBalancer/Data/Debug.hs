@@ -54,14 +54,13 @@ showValueStorageWithIdxSub (RM rm) depth = headerElements preprocessed
   headerElements []                    = []
   headerElements ((key, strings) : xs) = processed ++ headerElements xs
    where
-    bodies = bodyElements key strings
+    bodies    = bodyElements key strings
     -- NOTE: α or γ
     -- NOTE: headerElements cares whether the element is the last or not in this point
-    first  = (if xs == [] then gammaHeader else alphaHeader) ++ head bodies
+    first     = (if null xs then gammaHeader else alphaHeader) ++ head bodies
     -- NOTE: β or δ
     -- NOTE: headerElements cares whether the element is the last or not in this point
-    rest =
-      map ((if xs == [] then deltaHeader else betaHeader) ++) (tail bodies)
+    rest = map ((if null xs then deltaHeader else betaHeader) ++) (tail bodies)
     processed = first : rest
     -- NOTE: bodyElements cares whether the element is the first or not
   bodyElements :: Int -> [String] -> [String]
@@ -93,8 +92,8 @@ showValueStorageWithIdxSub (IM im) depth = labeledElements True . I.toList $ im
    where
     processed =
       (if isFirst
-          then (if xs == [] then "---" else "-+-")
-          else (if xs == [] then " --" else " +-")
+          then (if null xs then "---" else "-+-")
+          else (if null xs then " --" else " +-")
         )
         ++ show depth
         ++ "="
@@ -147,14 +146,13 @@ showValueStorageWithCondensedIdxSub (RM rm) accKeys depth = headerElements
   headerElements []                    = []
   headerElements ((key, strings) : xs) = processed ++ headerElements xs
    where
-    bodies = bodyElements key strings
+    bodies    = bodyElements key strings
     -- NOTE: α or γ
     -- NOTE: headerElements cares whether the element is the last or not in this point
-    first  = (if xs == [] then gammaHeader else alphaHeader) ++ head bodies
+    first     = (if null xs then gammaHeader else alphaHeader) ++ head bodies
     -- NOTE: β or δ
     -- NOTE: headerElements cares whether the element is the last or not in this point
-    rest =
-      map ((if xs == [] then deltaHeader else betaHeader) ++) (tail bodies)
+    rest = map ((if null xs then deltaHeader else betaHeader) ++) (tail bodies)
     processed = first : rest
     -- NOTE: headerElementsSub cares whether the element is the first or not
   bodyElements :: Int -> [String] -> [String]
@@ -178,8 +176,8 @@ showValueStorageWithCondensedIdxSub (IM im) accKeys depth =
    where
     processed =
       (if isFirst
-          then (if xs == [] then "---" else "-+-")
-          else (if xs == [] then " --" else " +-")
+          then (if null xs then "---" else "-+-")
+          else (if null xs then " --" else " +-")
         )
         ++ singleAccKeys
         ++ ":"
