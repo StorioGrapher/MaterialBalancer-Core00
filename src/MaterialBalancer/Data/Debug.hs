@@ -49,19 +49,21 @@ showValueStorageWithIdxSub (RM rm) depth = headerElements preprocessed
     map (\(k, v) -> (k, (showValueStorageWithIdxSub v (depth + 1))))
       . I.toList
       $ rm
-  -- NOTE: headerElements cares whether the element is the last or not
+  -- NOTE: headerElements cares whether the element is the first or not
   headerElements :: [(Int, [String])] -> [String]
   headerElements []                    = []
   headerElements ((key, strings) : xs) = processed ++ headerElements xs
    where
     bodies = bodyElements key strings
     -- NOTE: α or γ
+    -- NOTE: headerElements cares whether the element is the last or not in this point
     first  = (if xs == [] then gammaHeader else alphaHeader) ++ head bodies
     -- NOTE: β or δ
+    -- NOTE: headerElements cares whether the element is the last or not in this point
     rest =
       map ((if xs == [] then deltaHeader else betaHeader) ++) (tail bodies)
     processed = first : rest
-    -- NOTE: headerElementsSub cares whether the element is the first or not
+    -- NOTE: bodyElements cares whether the element is the first or not
   bodyElements :: Int -> [String] -> [String]
   bodyElements _   []      = []
   bodyElements key strings = first : rest
@@ -82,15 +84,18 @@ showValueStorageWithIdxSub (RM rm) depth = headerElements preprocessed
     bodySpacer = replicate (1 + 1 + 1 + len + 1) ' '
     rest       = map (bodySpacer ++) . tail $ strings
 
-showValueStorageWithIdxSub (IM im) depth =
-  labeledElements . I.toList $ im
+showValueStorageWithIdxSub (IM im) depth = labeledElements True . I.toList $ im
  where
   len = getDecimalLen . I.size $ im
-  labeledElements []                  = []
-  labeledElements ((key, value) : xs) = first : labeledElementsSub xs
+  labeledElements _ [] = []
+  labeledElements isFirst ((key, value) : xs) =
+    processed : labeledElements False xs
    where
-    first =
-      (if xs == [] then "---" else "-+-")
+    processed =
+      (if isFirst
+          then (if xs == [] then "---" else "-+-")
+          else (if xs == [] then " --" else " +-")
+        )
         ++ show depth
         ++ "="
         ++ space
@@ -101,21 +106,6 @@ showValueStorageWithIdxSub (IM im) depth =
       shownKey = show key
       shownLen = length shownKey
       space    = replicate (len - shownLen) '_'
-    labeledElementsSub []                  = []
-    labeledElementsSub ((key, value) : xs) = body : labeledElementsSub xs
-     where
-      body =
-        (if xs == [] then " --" else " +-")
-          ++ show depth
-          ++ "="
-          ++ space
-          ++ shownKey
-          ++ ": "
-          ++ show value
-       where
-        shownKey = show key
-        shownLen = length shownKey
-        space    = replicate (len - shownLen) '_'
 
 
 showValueStorageWithCondensedIdx :: ValueStorage -> String
@@ -159,8 +149,10 @@ showValueStorageWithCondensedIdxSub (RM rm) accKeys depth = headerElements
    where
     bodies = bodyElements key strings
     -- NOTE: α or γ
+    -- NOTE: headerElements cares whether the element is the last or not in this point
     first  = (if xs == [] then gammaHeader else alphaHeader) ++ head bodies
     -- NOTE: β or δ
+    -- NOTE: headerElements cares whether the element is the last or not in this point
     rest =
       map ((if xs == [] then deltaHeader else betaHeader) ++) (tail bodies)
     processed = first : rest
@@ -176,15 +168,19 @@ showValueStorageWithCondensedIdxSub (RM rm) accKeys depth = headerElements
     rest       = map (bodySpacer ++) . tail $ strings
 
 showValueStorageWithCondensedIdxSub (IM im) accKeys depth =
-  labeledElements . I.toList $ im
+  labeledElements True . I.toList $ im
  where
   singleAccKeys = intercalate ":" . reverse $ accKeys
   len           = getDecimalLen . I.size $ im
-  labeledElements []                  = []
-  labeledElements ((key, value) : xs) = first : labeledElementsSub xs
+  labeledElements _ [] = []
+  labeledElements isFirst ((key, value) : xs) =
+    processed : labeledElements False xs
    where
-    first =
-      (if xs == [] then "---" else "-+-")
+    processed =
+      (if isFirst
+          then (if xs == [] then "---" else "-+-")
+          else (if xs == [] then " --" else " +-")
+        )
         ++ singleAccKeys
         ++ ":"
         ++ show depth
@@ -197,23 +193,6 @@ showValueStorageWithCondensedIdxSub (IM im) accKeys depth =
       shownKey = show key
       shownLen = length shownKey
       space    = replicate (len - shownLen) '_'
-    labeledElementsSub []                  = []
-    labeledElementsSub ((key, value) : xs) = body : labeledElementsSub xs
-     where
-      body =
-        (if xs == [] then " --" else " +-")
-          ++ singleAccKeys
-          ++ ":"
-          ++ show depth
-          ++ "="
-          ++ space
-          ++ shownKey
-          ++ ": "
-          ++ show value
-       where
-        shownKey = show key
-        shownLen = length shownKey
-        space    = replicate (len - shownLen) '_'
 
 
 getDecimalLen num = getDecimalLenSub num 1
