@@ -11,7 +11,9 @@ import           Data.IntMap                    ( IntMap )
 import qualified Data.IntMap                   as I
 
 import           Data.Maybe
-import           Data.List                      ( sortOn )
+import           Data.List                      ( sortOn
+                                                , intercalate
+                                                )
 import           Data.Ord                       ( comparing )
 
 
@@ -114,6 +116,105 @@ showValueStorageWithIdxSub (IM im) accKeys depth =
         shownKey = show key
         shownLen = length shownKey
         space    = replicate (len - shownLen) '_'
+
+
+showValueStorageWithCondensedIdx :: ValueStorage -> String
+showValueStorageWithCondensedIdx vs =
+  unlines . showValueStorageWithCondensedIdxSub vs [] $ 0
+
+showValueStorageWithCondensedIdxSub
+  :: ValueStorage -> [String] -> Int -> [String]
+showValueStorageWithCondensedIdxSub (RM rm) accKeys depth = headerElements
+  preprocessed
+ where
+  len         = getDecimalLen . I.size $ rm
+  alphaHeader = "+-"
+  betaHeader  = "| "
+  gammaHeader = "--"
+  deltaHeader = "  "
+  preprocessed :: [(Int, [String])]
+  -- TODO: Do with accKeys
+  preprocessed =
+    map
+        (\(k, v) ->
+          ( k
+          , (showValueStorageWithCondensedIdxSub v
+                                                 ((showKey k) : accKeys)
+                                                 (depth + 1)
+            )
+          )
+        )
+      . I.toList
+      $ rm
+   where
+    showKey key = show depth ++ "=" ++ keySpacer ++ shownKey
+     where
+      shownKey  = show key
+      shownLen  = length shownKey
+      keySpacer = replicate (len - shownLen) '_'
+  -- NOTE: headerElements cares whether the element is the last or not
+  headerElements :: [(Int, [String])] -> [String]
+  headerElements []                    = []
+  headerElements ((key, strings) : xs) = processed ++ headerElements xs
+   where
+    bodies = bodyElements key strings
+    -- NOTE: α or γ
+    first  = (if xs == [] then gammaHeader else alphaHeader) ++ head bodies
+    -- NOTE: β or δ
+    rest =
+      map ((if xs == [] then deltaHeader else betaHeader) ++) (tail bodies)
+    processed = first : rest
+    -- NOTE: headerElementsSub cares whether the element is the first or not
+  bodyElements :: Int -> [String] -> [String]
+  bodyElements _   []      = []
+  bodyElements key strings = first : rest
+   where
+    betaBody   = "-"
+    deltaBody  = " "
+    first      = betaBody ++ head strings
+    bodySpacer = replicate 1 ' '
+    rest       = map (bodySpacer ++) . tail $ strings
+
+showValueStorageWithCondensedIdxSub (IM im) accKeys depth =
+  labeledElements . I.toList $ im
+ where
+  singleAccKeys = intercalate ":" . reverse $ accKeys
+  len           = getDecimalLen . I.size $ im
+  labeledElements []                  = []
+  labeledElements ((key, value) : xs) = first : labeledElementsSub xs
+   where
+    first =
+      (if xs == [] then "---" else "-+-")
+        ++ singleAccKeys
+        ++ ":"
+        ++ show depth
+        ++ "="
+        ++ space
+        ++ shownKey
+        ++ ": "
+        ++ show value
+     where
+      shownKey = show key
+      shownLen = length shownKey
+      space    = replicate (len - shownLen) '_'
+    labeledElementsSub []                  = []
+    labeledElementsSub ((key, value) : xs) = body : labeledElementsSub xs
+     where
+      body =
+        (if xs == [] then " --" else " +-")
+          ++ singleAccKeys
+          ++ ":"
+          ++ show depth
+          ++ "="
+          ++ space
+          ++ shownKey
+          ++ ": "
+          ++ show value
+       where
+        shownKey = show key
+        shownLen = length shownKey
+        space    = replicate (len - shownLen) '_'
+
 
 getDecimalLen num = getDecimalLenSub num 1
 getDecimalLenSub num acc | dived > 0 = getDecimalLenSub dived (acc + 1)
