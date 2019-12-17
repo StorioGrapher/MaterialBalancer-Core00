@@ -51,7 +51,7 @@ showValueStorageWithIdxSub (IM im) depth = labeledElements . I.toList $ im
     space = replicate (len+1-shownLen) '_'
     header = (if xs == [] then "--" else "+-") ++ show depth ++ "=" ++ space ++ shown ++ ": "
 
-getDecimalLen num = getDecimalLenSub num 0
+getDecimalLen num = getDecimalLenSub num 1
 getDecimalLenSub num acc
  | dived > 0 = getDecimalLenSub dived (acc+1)
  | otherwise = acc
