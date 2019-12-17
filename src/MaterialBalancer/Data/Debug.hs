@@ -33,10 +33,10 @@ import           Data.Ord                       ( comparing )
 -}
 
 showValueStorageWithIdx :: ValueStorage -> String
-showValueStorageWithIdx vs = unlines . showValueStorageWithIdxSub vs [] $ 0
+showValueStorageWithIdx vs = unlines . showValueStorageWithIdxSub vs $ 0
 
-showValueStorageWithIdxSub :: ValueStorage -> Keys -> Int -> [String]
-showValueStorageWithIdxSub (RM rm) accKeys depth = headerElements preprocessed
+showValueStorageWithIdxSub :: ValueStorage -> Int -> [String]
+showValueStorageWithIdxSub (RM rm) depth = headerElements preprocessed
  where
   len         = getDecimalLen . I.size $ rm
   alphaHeader = "+-"
@@ -46,7 +46,7 @@ showValueStorageWithIdxSub (RM rm) accKeys depth = headerElements preprocessed
   preprocessed :: [(Int, [String])]
   -- TODO: Do with accKeys
   preprocessed =
-    map (\(k, v) -> (k, (showValueStorageWithIdxSub v accKeys (depth + 1))))
+    map (\(k, v) -> (k, (showValueStorageWithIdxSub v (depth + 1))))
       . I.toList
       $ rm
   -- NOTE: headerElements cares whether the element is the last or not
@@ -82,7 +82,7 @@ showValueStorageWithIdxSub (RM rm) accKeys depth = headerElements preprocessed
     bodySpacer = replicate (1 + 1 + 1 + len + 1) ' '
     rest       = map (bodySpacer ++) . tail $ strings
 
-showValueStorageWithIdxSub (IM im) accKeys depth =
+showValueStorageWithIdxSub (IM im) depth =
   labeledElements . I.toList $ im
  where
   len = getDecimalLen . I.size $ im
