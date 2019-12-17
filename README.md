@@ -12,6 +12,15 @@ Moreover, StorioGrapher is not linkable with other tools.
 
 However, MaterialBalancer is specialized only for editing and viewing values with customized view.
 
+## Isn't this a one of the comparison chart?
+
+Yes, it is. But have better and nice features for productive comparison.
+
+At first, MaterialBalancer have View mode for comparing with many of aspect.
+Many of comparison chart have only one view or sorting function for a column.
+Also, it may not provide column re-ordering even it provide column selecting.
+Even if it could provide more configurable options, it may not provide column mirroring.
+
 ## Can't I do this with Spreadsheet?
 
 Yes, you may can, at least grouping.
