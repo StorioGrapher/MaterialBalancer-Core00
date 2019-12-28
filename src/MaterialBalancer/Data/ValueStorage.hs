@@ -98,12 +98,14 @@ deleteAxisSmartly :: AxisIndex -> ValueStorage -> ValueStorage
 deleteAxisSmartly idx vs = vs
 
 checkStructure :: ValueStorage -> Bool
-checkStructure = isJust . checkStructureSub
+checkStructure = isJust . checkStructureSub 0
 
-checkStructureSub (IM im) = Just . I.size $ im
-checkStructureSub (RM rm) = I.foldr checkIt base everySize
+checkStructureSub :: Int -> ValueStorage -> Maybe (Int, Int)
+checkStructureSub depth (IM im) = Just (depth, I.size im)
+-- FIXME: Should I have to get depth from `everySize`?
+checkStructureSub depth (RM rm) = maybe Nothing (\x -> Just (depth, x)) $ I.foldr checkIt base everySize
  where
-  everySize = I.map checkStructureSub rm
+  everySize = I.map (checkStructureSub (depth +1)) rm
   mFirst = I.lookupMin everySize
   first = maybe Nothing snd mFirst
   base = if isJust mFirst then Just 0 else Nothing
