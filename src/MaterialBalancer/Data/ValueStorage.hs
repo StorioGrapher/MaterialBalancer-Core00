@@ -4,7 +4,7 @@ module MaterialBalancer.Data.ValueStorage where
 import           MaterialBalancer.Data.Primitive
 import           MaterialBalancer.Data.Axis
 
-import qualified Data.Foldable as F
+import qualified Data.Foldable                 as F
 import           Data.IntMap                    ( IntMap )
 import qualified Data.IntMap                   as I
 import           Data.Maybe
@@ -103,30 +103,31 @@ checkStructure = isJust . checkStructureSub 0
 checkStructureSub :: Int -> ValueStorage -> Maybe (Int, Int)
 checkStructureSub depth (IM im) = Just (depth, I.size im)
 -- FIXME: Should I have to get depth from `everySize`?
-checkStructureSub depth (RM rm) = maybe Nothing (\x -> Just (depth, x)) $ I.foldr checkIt base everySize
+checkStructureSub depth (RM rm) =
+  maybe Nothing (\x -> Just (depth, x)) $ I.foldr checkIt base everySize
  where
-  everySize = I.map (checkStructureSub (depth +1)) rm
-  mFirst = I.lookupMin everySize
-  first = maybe Nothing snd mFirst
-  base = if isJust mFirst then Just 0 else Nothing
-  checkIt v b = if v == first then (+1) <$> b else Nothing
+  everySize = I.map (checkStructureSub (depth + 1)) rm
+  mFirst    = I.lookupMin everySize
+  first     = maybe Nothing snd mFirst
+  base      = if isJust mFirst then Just 0 else Nothing
+  checkIt v b = if v == first then (+ 1) <$> b else Nothing
 
 
 fromList1 :: [Variable] -> ValueStorage
-fromList1 = IM . I.fromList . zip [0..]
+fromList1 = IM . I.fromList . zip [0 ..]
 
 fromList2 :: [[Variable]] -> ValueStorage
-fromList2 = RM . I.fromList . zip [0..] . map fromList1
+fromList2 = RM . I.fromList . zip [0 ..] . map fromList1
 
 fromList3 :: [[[Variable]]] -> ValueStorage
-fromList3 = RM . I.fromList . zip [0..] . map fromList2
+fromList3 = RM . I.fromList . zip [0 ..] . map fromList2
 
 fromList4 :: [[[[Variable]]]] -> ValueStorage
-fromList4 = RM . I.fromList . zip [0..] . map fromList3
+fromList4 = RM . I.fromList . zip [0 ..] . map fromList3
 
 toList1 :: ValueStorage -> [Variable]
 toList1 (IM im) = map snd . I.toList $ im
-toList1 (RM _) = error "[ERROR]<toList1>: You can't apply `toList1` to (RM _)"
+toList1 (RM _ ) = error "[ERROR]<toList1>: You can't apply `toList1` to (RM _)"
 
 toList2 :: ValueStorage -> [[Variable]]
 toList2 (IM im) = error "[ERROR]<toList2>: You can't apply `toList2` to (IM _)"
