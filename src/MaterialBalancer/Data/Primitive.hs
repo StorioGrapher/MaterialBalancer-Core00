@@ -8,3 +8,5 @@ type Name = Text
 type Keys = [Key]
 type Key = [Selector]
 type Selector = (Int, Int) -- NOTE: (AxisIndex,ColumnIndex)
+
+type ID = Int
