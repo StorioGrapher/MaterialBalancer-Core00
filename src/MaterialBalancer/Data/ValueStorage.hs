@@ -2,7 +2,11 @@ module MaterialBalancer.Data.ValueStorage where
 
 
 import           MaterialBalancer.Data.Primitive
-import           MaterialBalancer.Data.Axis
+import           MaterialBalancer.Data.Axis     ( AxisIndex
+                                                , AxisName
+                                                , AxisMap
+                                                )
+import qualified MaterialBalancer.Data.Axis as A
 
 import qualified Data.Foldable                 as F
 import           Data.IntMap                    ( IntMap )
@@ -83,10 +87,12 @@ getColumnSizes (IM im) = [I.size im]
 getColumnSizes (RM rm) = I.size rm : (getColumnSizes . snd . I.findMin $ rm)
 
 addAxis :: ValueStorage -> ValueStorage
-addAxis vs = vs
+addAxis (RM rm) = RM . I.map addAxis $ rm
+addAxis (IM im) = RM . I.map (IM . I.singleton 0) $ im
+
 
 deleteAxis :: AxisIndex -> ValueStorage -> ValueStorage
-deleteAxis idx vs = vs
+deleteAxis idx vs = error "[ERROR]<deleteAxis>: Not yet implemented"
 -- TODO:
 -- * Convert every sub-tree as lists
 --   NOTE: Need to make a mixed key - not easy problem
