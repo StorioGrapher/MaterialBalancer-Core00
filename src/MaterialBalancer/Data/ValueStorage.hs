@@ -103,9 +103,9 @@ checkStructure = isJust . checkStructureSub
 checkStructureSub (IM im) = Just . I.size $ im
 checkStructureSub (RM rm) = I.foldr checkIt base everySize
  where
-  everySize = I.map checkStructureSub $ rm
+  everySize = I.map checkStructureSub rm
   mFirst = I.lookupMin everySize
-  first = fromMaybe Nothing . (snd <$>) $ mFirst
+  first = maybe Nothing snd mFirst
   base = if isJust mFirst then Just 0 else Nothing
   checkIt v b = if v == first then (+1) <$> b else Nothing
 
