@@ -4,9 +4,9 @@ module MaterialBalancer.Data.ValueStorage where
 import           MaterialBalancer.Data.Primitive
 import           MaterialBalancer.Data.Axis
 
+import qualified Data.Foldable as F
 import           Data.IntMap                    ( IntMap )
 import qualified Data.IntMap                   as I
-
 import           Data.Maybe
 import           Data.List                      ( sortOn )
 import           Data.Ord                       ( comparing )
@@ -96,3 +96,44 @@ deleteAxis idx vs = vs
 -- TODO: Add RemovingMode as a argument
 deleteAxisSmartly :: AxisIndex -> ValueStorage -> ValueStorage
 deleteAxisSmartly idx vs = vs
+
+checkStructure :: ValueStorage -> Bool
+checkStructure = isJust . checkStructureSub
+
+checkStructureSub (IM im) = Just . I.size $ im
+checkStructureSub (RM rm) = I.foldr checkIt base everySize
+ where
+  everySize = I.map checkStructureSub $ rm
+  mFirst = I.lookupMin everySize
+  first = fromMaybe Nothing . (snd <$>) $ mFirst
+  base = if isJust mFirst then Just 0 else Nothing
+  checkIt v b = if v == first then (+1) <$> b else Nothing
+
+
+fromList1 :: [Variable] -> ValueStorage
+fromList1 = IM . I.fromList . zip [0..]
+
+fromList2 :: [[Variable]] -> ValueStorage
+fromList2 = RM . I.fromList . zip [0..] . map fromList1
+
+fromList3 :: [[[Variable]]] -> ValueStorage
+fromList3 = RM . I.fromList . zip [0..] . map fromList2
+
+fromList4 :: [[[[Variable]]]] -> ValueStorage
+fromList4 = RM . I.fromList . zip [0..] . map fromList3
+
+toList1 :: ValueStorage -> [Variable]
+toList1 (IM im) = map snd . I.toList $ im
+toList1 (RM _) = error "[ERROR]<toList1>: You can't apply `toList1` to (RM _)"
+
+toList2 :: ValueStorage -> [[Variable]]
+toList2 (IM im) = error "[ERROR]<toList2>: You can't apply `toList2` to (IM _)"
+toList2 (RM rm) = map (toList1 . snd) . I.toList $ rm
+
+toList3 :: ValueStorage -> [[[Variable]]]
+toList3 (IM im) = error "[ERROR]<toList3>: You can't apply `toList3` to (IM _)"
+toList3 (RM rm) = map (toList2 . snd) . I.toList $ rm
+
+toList4 :: ValueStorage -> [[[[Variable]]]]
+toList4 (IM im) = error "[ERROR]<toList4>: You can't apply `toList4` to (IM _)"
+toList4 (RM rm) = map (toList3 . snd) . I.toList $ rm
