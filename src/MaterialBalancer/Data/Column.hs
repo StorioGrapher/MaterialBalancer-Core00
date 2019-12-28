@@ -28,6 +28,22 @@ addAxis :: ColumnsMap -> (AxisIndex, ColumnsMap)
 addAxis columnsMap = (newIdx, I.insert newIdx I.empty columnsMap)
   where newIdx = (I.size columnsMap)
 
+
+addColumn :: AxisIndex -> ColumnName -> ColumnsMap -> (ColumnIndex, ColumnsMap)
+addColumn ai name columnsMap = (ci, I.insert ai newCM columnsMap)
+ where
+  targetCM    = columnsMap I.! ai
+  (ci, newCM) = addColumnIn name targetCM
+
+addColumn' :: AxisIndex -> ColumnName -> ColumnsMap -> (ColumnIndex, ColumnsMap)
+addColumn' ai name columnsMap = (ci, I.insert ai newCM columnsMap)
+ where
+  target   = I.lookup ai columnsMap
+  targetCM = fromMaybe
+    (error "[ERROR]<addColumn'>: No such Axis idx in the ColumnsMap")
+    target
+  (ci, newCM) = addColumnIn' name targetCM
+
 addColumnIn :: ColumnName -> ColumnMap -> (ColumnIndex, ColumnMap)
 addColumnIn name cm = (idx, I.insert idx name cm) where idx = I.size cm
 
@@ -41,6 +57,24 @@ addColumnIn' name cm = if isExist
   idx     = I.size cm
   isExist = isJust (I.lookup idx cm)
 
+
+deleteColumn
+  :: AxisIndex -> ColumnIndex -> ColumnsMap -> (ColumnName, ColumnsMap)
+deleteColumn ai ci columnsMap = (deletedName, I.insert ai newCM columnsMap)
+ where
+  targetCM             = columnsMap I.! ai
+  (deletedName, newCM) = deleteColumnIn ci targetCM
+
+deleteColumn'
+  :: AxisIndex -> ColumnIndex -> ColumnsMap -> (ColumnName, ColumnsMap)
+deleteColumn' ai ci columnsMap = (deletedName, I.insert ai newCM columnsMap)
+ where
+  target   = I.lookup ai columnsMap
+  targetCM = fromMaybe
+    (error "[ERROR]<deleteColumn'>: No such Axis idx in the ColumnsMap")
+    target
+  (deletedName, newCM) = deleteColumnIn' ci targetCM
+
 deleteColumnIn :: ColumnIndex -> ColumnMap -> (ColumnName, ColumnMap)
 deleteColumnIn idx cm = (deletedName, I.mapKeys fixer cm)
  where
@@ -51,6 +85,23 @@ deleteColumnIn' :: ColumnIndex -> ColumnMap -> (ColumnName, ColumnMap)
 deleteColumnIn' idx cm = if isJust (I.lookup idx cm)
   then deleteColumnIn idx cm
   else error $ "[ERROR]<deleteColumn'> No such Column like " ++ show idx
+
+changeColumnName
+  :: AxisIndex -> ColumnIndex -> ColumnName -> ColumnsMap -> ColumnsMap
+changeColumnName ai ci name columnsMap = I.insert ai newCM columnsMap
+ where
+  target = columnsMap I.! ai
+  newCM  = changeColumnNameIn ci name target
+
+changeColumnName'
+  :: AxisIndex -> ColumnIndex -> ColumnName -> ColumnsMap -> ColumnsMap
+changeColumnName' ai ci name columnsMap = I.insert ai newCM columnsMap
+ where
+  target   = I.lookup ai columnsMap
+  targetCM = fromMaybe
+    (error "[ERROR]<changeColumnName'>: No such Axis idx in the ColumnsMap")
+    target
+  newCM = changeColumnNameIn ci name targetCM
 
 changeColumnNameIn :: ColumnIndex -> ColumnName -> ColumnMap -> ColumnMap
 changeColumnNameIn = I.insert
