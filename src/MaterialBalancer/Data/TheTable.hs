@@ -1,4 +1,4 @@
--- Note: TheTable module provides abstract interface that operate Axis, Columns and ValueStorage with single function
+-- Note: TheTable module provides integrated interface that operate Axis, Columns and ValueStorage with single function
 
 module MaterialBalancer.Data.TheTable where
 
@@ -23,12 +23,19 @@ import           MaterialBalancer.Data.ValueStorage
 import qualified MaterialBalancer.Data.ValueStorage
                                                as S
 
-import qualified Data.IntMap as I
+import qualified Data.IntMap                   as I
 
 
 type TheTable = (AxisMap, ColumnsMap, ValueStorage)
 
-initialTheTable = (I.empty, I.empty, IM I.empty)
+-- NOTE: `blankTable` can't be start with less then 2 axes
+-- NOTE: Because of there is more than 2 axes, the ValueStorage can't be empty
+blankTable :: TheTable
+blankTable =
+  ( I.fromList [(0, "X"), (1, "Y")]
+  , I.fromList [(0, I.singleton 0 "X-0"), (1, I.singleton 0 "Y-0")]
+  , RM . I.singleton 0 . IM . I.singleton 0 $ Nothing
+  )
 
 getAxisMap :: TheTable -> AxisMap
 getAxisMap (am, _, _) = am
@@ -53,9 +60,9 @@ deleteColumnAt columnIdx axisIdx theTable = theTable
 addAxis :: AxisName -> TheTable -> TheTable
 addAxis name (am, csm, vs) = (newAM, newCsM, newVS)
  where
-  (_,newAM)  = A.addAxis name am
-  (_,newCsM) = C.addAxis csm
-  newVS  = S.addAxis vs
+  (_, newAM ) = A.addAxis name am
+  (_, newCsM) = C.addAxis csm
+  newVS       = S.addAxis vs
 
 addColumn :: AxisIndex -> ColumnName -> TheTable -> TheTable
 addColumn ai name (am, csm, vs) = (am, newCsM, newVS)
