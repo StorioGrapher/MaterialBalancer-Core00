@@ -20,5 +20,5 @@ theColumnsMap = undefined
 theValueStorage = undefined
 theTable01 = (theAxisMap, theColumnsMap, theValueStorage)
 
---   =TEST=   Test interlocking features
+--   =TEST=   Test integrated features
 --  ==TEST==  Test add a column
