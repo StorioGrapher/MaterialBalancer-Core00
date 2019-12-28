@@ -16,44 +16,48 @@ type ColumnMap = IntMap ColumnName
 
 
 getColumnMap :: AxisIndex -> ColumnsMap -> ColumnMap
-getColumnMap idx am = fromJust $ I.lookup idx am
+getColumnMap idx columnsMap = fromJust $ I.lookup idx columnsMap
 
 getColumnMap' :: AxisIndex -> ColumnsMap -> ColumnMap
-getColumnMap' idx am = if isJust mColumnMap
-  then getColumnMap idx am
+getColumnMap' idx columnsMap = if isJust mColumnMap
+  then getColumnMap idx columnsMap
   else error $ "[ERROR]<getColumnMap'> No such ColumnMap like " ++ show idx
-  where mColumnMap = I.lookup idx am
+  where mColumnMap = I.lookup idx columnsMap
 
-addColumn :: ColumnName -> ColumnMap -> (ColumnIndex, ColumnMap)
-addColumn name am = (idx, I.insert idx name am) where idx = I.size am
+addAxis :: ColumnsMap -> (AxisIndex, ColumnsMap)
+addAxis columnsMap = (newIdx, I.insert newIdx I.empty columnsMap)
+  where newIdx = (I.size columnsMap)
 
-addColumn' :: ColumnName -> ColumnMap -> (ColumnIndex, ColumnMap)
-addColumn' name am = if isExist
+addColumnIn :: ColumnName -> ColumnMap -> (ColumnIndex, ColumnMap)
+addColumnIn name cm = (idx, I.insert idx name cm) where idx = I.size cm
+
+addColumnIn' :: ColumnName -> ColumnMap -> (ColumnIndex, ColumnMap)
+addColumnIn' name cm = if isExist
   then
     error
-      "[ERROR]<addColumn'> Auto-generated Column idx is duplicated with another exist"
-  else addColumn name am
+      "[ERROR]<addColumnIn'> Auto-generated Column idx is duplicated with another exist"
+  else addColumnIn name cm
  where
-  idx     = I.size am
-  isExist = isJust (I.lookup idx am)
+  idx     = I.size cm
+  isExist = isJust (I.lookup idx cm)
 
-deleteColumn :: ColumnIndex -> ColumnMap -> (ColumnName, ColumnMap)
-deleteColumn idx am = (deletedName, I.mapKeys fixer am)
+deleteColumnIn :: ColumnIndex -> ColumnMap -> (ColumnName, ColumnMap)
+deleteColumnIn idx cm = (deletedName, I.mapKeys fixer cm)
  where
-  deletedName = fromJust $ I.lookup idx am
+  deletedName = fromJust $ I.lookup idx cm
   fixer prev = if prev > idx then prev - 1 else prev
 
-deleteColumn' :: ColumnIndex -> ColumnMap -> (ColumnName, ColumnMap)
-deleteColumn' idx am = if isJust (I.lookup idx am)
-  then deleteColumn idx am
+deleteColumnIn' :: ColumnIndex -> ColumnMap -> (ColumnName, ColumnMap)
+deleteColumnIn' idx cm = if isJust (I.lookup idx cm)
+  then deleteColumnIn idx cm
   else error $ "[ERROR]<deleteColumn'> No such Column like " ++ show idx
 
-changeColumnName :: ColumnIndex -> ColumnName -> ColumnMap -> ColumnMap
-changeColumnName = I.insert
+changeColumnNameIn :: ColumnIndex -> ColumnName -> ColumnMap -> ColumnMap
+changeColumnNameIn = I.insert
 
-changeColumnName' :: ColumnIndex -> ColumnName -> ColumnMap -> ColumnMap
-changeColumnName' idx name am = if isJust (I.lookup idx am)
-  then changeColumnName idx name am
+changeColumnNameIn' :: ColumnIndex -> ColumnName -> ColumnMap -> ColumnMap
+changeColumnNameIn' idx name cm = if isJust (I.lookup idx cm)
+  then changeColumnNameIn idx name cm
   else error $ "[ERROR]<changeColumnName'> No such Column like " ++ show idx
 
 -- TODO: reallocateColumn ::
