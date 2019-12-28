@@ -53,13 +53,13 @@ getValueSub _ (IM _) =
 getValueSub (idx : rest) (RM rm) = I.lookup idx rm >>= getValueSub rest
 
 
-setValue :: Key -> Variable -> ValueStorage -> ValueStorage
-setValue key variable vs = setValueSub vs key
+setVariable :: Key -> Variable -> ValueStorage -> ValueStorage
+setVariable key variable vs = setVariableSub vs key
  where
-  setValueSub :: ValueStorage -> Key -> ValueStorage
-  setValueSub (IM im) [(_, cIdx)       ] = IM $ I.insert cIdx variable im
-  setValueSub (RM rm) ((_, cIdx) : rest) = RM $ I.insert cIdx newMap rm
-    where newMap = setValueSub (fromJust $ I.lookup cIdx rm) rest
+  setVariableSub :: ValueStorage -> Key -> ValueStorage
+  setVariableSub (IM im) [(_, cIdx)       ] = IM $ I.insert cIdx variable im
+  setVariableSub (RM rm) ((_, cIdx) : rest) = RM $ I.insert cIdx newMap rm
+    where newMap = setVariableSub (fromJust $ I.lookup cIdx rm) rest
 
 -- NOTE: Add a Variable for each selected Axis-map
 addColumn :: AxisIndex -> ValueStorage -> ValueStorage

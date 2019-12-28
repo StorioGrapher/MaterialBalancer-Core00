@@ -70,6 +70,6 @@ addColumn ai name (am, csm, vs) = (am, newCsM, newVS)
   (ci, newCsM) = C.addColumn ai name csm
   newVS        = S.addColumn ai vs
 
-setValue :: Key -> Variable -> TheTable -> TheTable
-setValue key variable (am, csm, vs) = (am, csm, newVS)
-  where newVS = S.setValue key variable vs
+setVariable :: Key -> Variable -> TheTable -> TheTable
+setVariable key variable (am, csm, vs) = (am, csm, newVS)
+  where newVS = S.setVariable key variable vs
