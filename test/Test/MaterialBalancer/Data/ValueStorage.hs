@@ -1,6 +1,8 @@
 module Test.MaterialBalancer.Data.ValueStorage where
 
 
+import Test.MaterialBalancer.Data.TestSet
+
 import Test.Helper
 import Test.Framework
 import Test.Framework.Providers.HUnit

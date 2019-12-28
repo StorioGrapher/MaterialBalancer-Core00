@@ -6,7 +6,7 @@ import           MaterialBalancer.Data.Axis     ( AxisIndex
                                                 , AxisName
                                                 , AxisMap
                                                 )
-import qualified MaterialBalancer.Data.Axis as A
+import qualified MaterialBalancer.Data.Axis    as A
 
 import qualified Data.Foldable                 as F
 import           Data.IntMap                    ( IntMap )
