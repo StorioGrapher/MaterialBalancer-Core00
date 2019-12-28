@@ -23,15 +23,17 @@ Changelog for MaterialBalancer
 ### Fixed
 
 
-## 0.0.2.0 -- 2019-12-12
+## 0.0.2.0 -- 2019-12-28
 
 ## Added
 * Implement more functions for `Data.*` to build `TheTable`
 * Implement integrated function
+* Implement debug function for `ValueStorage`
 
 ### Changed (Modified)
 * Change module name from `MB.*` to `MaterialBalancer.*`
 * Change data manipulation function's argument order like **containers** function - for better combination
+
 
 ## 0.0.1.0 -- 2019-12-04
 
