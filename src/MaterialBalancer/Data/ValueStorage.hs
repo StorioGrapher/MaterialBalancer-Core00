@@ -21,20 +21,20 @@ data RMap a = RM (IntMap (RMap a)) | IM (IntMap a) deriving Show
 type ValueStorage = RMap Variable
 
 
-getValues :: Keys -> ValueStorage -> [(Key, Variable)]
-getValues keys vs = map (\k -> (k, getValue k vs)) keys
+getVariables :: Keys -> ValueStorage -> [(Key, Variable)]
+getVariables keys vs = map (\k -> (k, getVariable k vs)) keys
 
--- NOTE: Exclude input data checker to getValue'
-getValue :: Key -> ValueStorage -> Variable
-getValue key = getValueSub condensedKey
+-- NOTE: Exclude input data checker to getVariable'
+getVariable :: Key -> ValueStorage -> Variable
+getVariable key = getVariableSub condensedKey
  where
   sortedKey    = sortOn fst key
   condensedKey = map snd sortedKey
 
-getValue' :: Key -> ValueStorage -> Variable
-getValue' key vs = if isGood
-  then getValue sortedKey vs
-  else error $ "[ERROR]<getValue'>: The given Key is illegal: " ++ show key
+getVariable' :: Key -> ValueStorage -> Variable
+getVariable' key vs = if isGood
+  then getVariable sortedKey vs
+  else error $ "[ERROR]<getVariable'>: The given Key is illegal: " ++ show key
  where
   sortedKey = sortOn fst key
   isGood    = checker sortedKey
@@ -42,14 +42,14 @@ getValue' key vs = if isGood
   checker [     _                   ] = True
   checker keys@((x, _) : (y, _) : zs) = (x + 1 /= y) || checker (tail keys)
 
-getValueSub :: [AxisIndex] -> ValueStorage -> Variable
-getValueSub [] _ = error "[ERROR]<getValueSub>: Can't reach!"
-getValueSub [_] (RM _) =
-  error "[ERROR]<getValueSub>: The Key have too less selector"
-getValueSub [idx] (IM im) = fromJust $ I.lookup idx im
-getValueSub _ (IM _) =
-  error "[ERROR]<getValueSub>: The Key have too much selector"
-getValueSub (idx : rest) (RM rm) = I.lookup idx rm >>= getValueSub rest
+getVariableSub :: [AxisIndex] -> ValueStorage -> Variable
+getVariableSub [] _ = error "[ERROR]<getVariableSub>: Can't reach!"
+getVariableSub [_] (RM _) =
+  error "[ERROR]<getVariableSub>: The Key have too less selector"
+getVariableSub [idx] (IM im) = fromJust $ I.lookup idx im
+getVariableSub _ (IM _) =
+  error "[ERROR]<getVariableSub>: The Key have too much selector"
+getVariableSub (idx : rest) (RM rm) = I.lookup idx rm >>= getVariableSub rest
 
 
 setVariable :: Key -> Variable -> ValueStorage -> ValueStorage
