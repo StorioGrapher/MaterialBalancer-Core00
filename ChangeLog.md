@@ -14,7 +14,7 @@ Changelog for MaterialBalancer
 * Add a new data format - single file
 
 ### Changed (Modified)
-* `RMap` definition should guarantee that every leaf's depth are same
+* `RMap` definition should guarantee that every leaf's depth is same
 
 ### Deprecated
 
