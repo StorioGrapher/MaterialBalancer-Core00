@@ -13,4 +13,4 @@ import           MaterialBalancer.Data.View
 
 type ViewResultSimple2D = Vector ViewResultSimple
 type ViewResultSimple = Vector ViewContentSimple
-data ViewContentSimple = VTDelimiter | VTLabel Label | VTColumn ColumnName | VTVariable Variable deriving Show
+data ViewContentSimple = VCSDelimiter | VCSLabel Label | VCSColumn ColumnName | VCSVariable Variable deriving Show
