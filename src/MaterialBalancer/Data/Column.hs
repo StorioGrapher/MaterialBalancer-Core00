@@ -45,7 +45,7 @@ getColumnNameIn ci cm = cm I.! ci
 getColumnNameIn' :: ColumnIndex -> ColumnMap -> ColumnName
 getColumnNameIn' ci cm = fromMaybe
   (  error ("[ERROR]<getColumnNameIn'> No such ColumnName in Column["
-  ++ (show ci)
+  ++ show ci
   ++ "]")
   )
   mName
@@ -53,7 +53,7 @@ getColumnNameIn' ci cm = fromMaybe
 
 addAxis :: ColumnsMap -> (AxisIndex, ColumnsMap)
 addAxis columnsMap = (newIdx, I.insert newIdx I.empty columnsMap)
-  where newIdx = (I.size columnsMap)
+  where newIdx = I.size columnsMap
 
 
 addColumn :: AxisIndex -> ColumnName -> ColumnsMap -> (ColumnIndex, ColumnsMap)

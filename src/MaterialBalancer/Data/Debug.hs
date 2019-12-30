@@ -46,7 +46,7 @@ showValueStorageWithIdxSub (RM rm) depth = headerElements preprocessed
   preprocessed :: [(Int, [String])]
   -- TODO: Do with accKeys
   preprocessed =
-    map (\(k, v) -> (k, (showValueStorageWithIdxSub v (depth + 1))))
+    map (\(k, v) -> (k, showValueStorageWithIdxSub v (depth + 1)))
       . I.toList
       $ rm
   -- NOTE: headerElements cares whether the element is the first or not
@@ -127,10 +127,9 @@ showValueStorageWithCondensedIdxSub (RM rm) accKeys depth = headerElements
     map
         (\(k, v) ->
           ( k
-          , (showValueStorageWithCondensedIdxSub v
-                                                 ((showKey k) : accKeys)
-                                                 (depth + 1)
-            )
+          , showValueStorageWithCondensedIdxSub v
+                                                (showKey k : accKeys)
+                                                (depth + 1)
           )
         )
       . I.toList

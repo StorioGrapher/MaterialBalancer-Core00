@@ -109,11 +109,11 @@ checkStructureSub :: Int -> ValueStorage -> Maybe (Int, Int)
 checkStructureSub depth (IM im) = Just (depth, I.size im)
 -- FIXME: Should I have to get depth from `everySize`?
 checkStructureSub depth (RM rm) =
-  maybe Nothing (\x -> Just (depth, x)) $ I.foldr checkIt base everySize
+  (\x -> Just (depth, x)) =<< I.foldr checkIt base everySize
  where
   everySize = I.map (checkStructureSub (depth + 1)) rm
   mFirst    = I.lookupMin everySize
-  first     = maybe Nothing snd mFirst
+  first     = snd =<< mFirst
   base      = if isJust mFirst then Just 0 else Nothing
   checkIt v b = if v == first then (+ 1) <$> b else Nothing
 
