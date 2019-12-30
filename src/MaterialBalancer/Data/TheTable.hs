@@ -16,8 +16,7 @@ import           MaterialBalancer.Data.Column   ( ColumnsMap
                                                 )
 import qualified MaterialBalancer.Data.Column  as C
 import           MaterialBalancer.Data.ValueStorage
-                                                ( Variable
-                                                , ValueStorage
+                                                ( ValueStorage
                                                 , RMap(..)
                                                 )
 import qualified MaterialBalancer.Data.ValueStorage

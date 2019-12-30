@@ -1,14 +1,14 @@
 module MaterialBalancer.Data.View where
 
 
-import Data.Text (Text)
-import Data.Vector
+import           Data.Text                      ( Text )
+import           Data.Vector
 
-import MaterialBalancer.Data.Primitive
-import MaterialBalancer.Data.Axis
-import MaterialBalancer.Data.Column
-import MaterialBalancer.Data.ValueStorage
-import MaterialBalancer.Data.TheTable
+import           MaterialBalancer.Data.Primitive
+import           MaterialBalancer.Data.Axis
+import           MaterialBalancer.Data.Column
+import           MaterialBalancer.Data.ValueStorage
+import           MaterialBalancer.Data.TheTable
 
 
 {-
@@ -40,16 +40,12 @@ data View2D = View2D
   , viewSetting2D :: [View2DGroup]
   } deriving Show
 
-type Label = Text
-type Labeling = Maybe Label
 data View2DGroup = V2DGroup Labeling [(Labeling, ColumnIndex)] deriving Show
 data ViewGroup = VGroup Labeling [(Labeling, ViewColumn)] deriving Show
 data ViewColumn = VColumnHD AxisIndex ColumnIndex | VColumnHDLattice [ViewColumn] deriving Show
 
-type View2DResult = Vector ViewContent
-data ViewContent = VTDelimiter | VTLabel Label | VTVariable Variable deriving Show
 
 -- TODO: Build and modify View2D
--- TODO: Get default View2D
--- TODO: Build View2D from scratch
--- TODO: Modify View2D by argument
+--  TODO: Get default View2D
+--  TODO: Build View2D from scratch
+--  TODO: Modify View2D by argument

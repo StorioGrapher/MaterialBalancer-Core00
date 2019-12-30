@@ -18,7 +18,6 @@ import           Data.Ord                       ( comparing )
 
 -- TODO: the data definition should guarantee that every leaf's depth are same
 data RMap a = RM (IntMap (RMap a)) | IM (IntMap a) deriving Show
-type Variable = Maybe Value
 type ValueStorage = RMap Variable
 
 

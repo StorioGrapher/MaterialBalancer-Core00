@@ -8,7 +8,7 @@ import qualified Data.IntMap                   as I
 import           Data.Maybe
 
 
-type AxisIndex = Int
+type AxisIndex = Index
 type AxisName = Name
 type AxisMap = IntMap AxisName
 

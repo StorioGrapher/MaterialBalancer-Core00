@@ -10,7 +10,7 @@ import           Data.Maybe
 
 
 type ColumnsMap = IntMap ColumnMap
-type ColumnIndex = Int
+type ColumnIndex = Index
 type ColumnName = Name
 type ColumnMap = IntMap ColumnName
 
