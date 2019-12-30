@@ -24,6 +24,33 @@ getColumnMap' idx columnsMap = if isJust mColumnMap
   else error $ "[ERROR]<getColumnMap'> No such ColumnMap like " ++ show idx
   where mColumnMap = I.lookup idx columnsMap
 
+getColumnName :: AxisIndex -> ColumnIndex -> ColumnsMap -> ColumnName
+getColumnName ai ci columnsMap = getColumnNameIn ci targetCM
+  where targetCM = columnsMap I.! ai
+
+getColumnName' :: AxisIndex -> ColumnIndex -> ColumnsMap -> ColumnName
+getColumnName' ai ci columnsMap = getColumnNameIn' ci targetCM
+ where
+  mTargetCM = I.lookup ai columnsMap
+  targetCM  = fromMaybe
+    (  error ("[ERROR]<getColumnName'> No such ColumnMap in ColumnsMap["
+    ++ show ai
+    ++ "]")
+    )
+    mTargetCM
+
+getColumnNameIn :: ColumnIndex -> ColumnMap -> ColumnName
+getColumnNameIn ci cm = cm I.! ci
+
+getColumnNameIn' :: ColumnIndex -> ColumnMap -> ColumnName
+getColumnNameIn' ci cm = fromMaybe
+  (  error ("[ERROR]<getColumnNameIn'> No such ColumnName in Column["
+  ++ (show ci)
+  ++ "]")
+  )
+  mName
+  where mName = I.lookup ci cm
+
 addAxis :: ColumnsMap -> (AxisIndex, ColumnsMap)
 addAxis columnsMap = (newIdx, I.insert newIdx I.empty columnsMap)
   where newIdx = (I.size columnsMap)
