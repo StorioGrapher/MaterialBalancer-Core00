@@ -42,9 +42,11 @@ executables:
     - MaterialBalancer
 
 tests:
-  MaterialBalancer-test:
+  MaterialBalancer-spec:
     main:                Spec.hs
-    source-dirs:         test
+    source-dirs:
+    - tests/spec
+    - test
     ghc-options:
     - -threaded
     - -rtsopts
@@ -60,3 +62,15 @@ tests:
     - test-framework-hunit
     - test-framework-quickcheck2
     - test-framework-th
+  MaterialBalancer-visual:
+    main:                Visual.hs
+    source-dirs:
+    - tests/visual
+    - test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    default-extensions:
+    dependencies:
+    - MaterialBalancer
