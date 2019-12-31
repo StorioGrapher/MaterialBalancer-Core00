@@ -15,12 +15,24 @@ Changelog for MaterialBalancer
 
 ### Changed (Modified)
 * `RMap` definition should guarantee that every leaf's depth is same
+* Implement High-dimension & Recursive `View` structure
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+## 0.0.3.1 -- 2020-01-??
+
+## 0.0.3.0 -- 2019-12-31
+
+## Added
+* Implement basic `View` feature
+* Implement substantial functions of `View` on `Data.*`
+
+## Changed
+* Change test structure for using many type of test
 
 
 ## 0.0.2.0 -- 2019-12-28

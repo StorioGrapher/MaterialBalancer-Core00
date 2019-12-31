@@ -14,3 +14,7 @@ import           MaterialBalancer.Data.View
 type ViewResultSimple2D = Vector ViewResultSimple
 type ViewResultSimple = Vector ViewContentSimple
 data ViewContentSimple = VCSDelimiter | VCSLabel Label | VCSColumn ColumnName | VCSVariable Variable deriving Show
+
+-- TODO: ViewResult2D: 2D version but not using Vector
+
+-- TODO: ViewResultNL: Nested lattice version for High-Dimension matrix
