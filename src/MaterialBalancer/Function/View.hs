@@ -20,7 +20,10 @@ buildDefaultView2D vID baseAI theTable@(am, csm, vs) = View2D
   targetAI
   [theViewGroup]
  where
-  targetAI        = 1 - baseAI
+  is2D     = 2 == I.size am
+  targetAI = if is2D
+    then 1 - baseAI
+    else error "[ERROR]<buildDefaultView2D> Given TheTable is not 2D"
   baseColumnNum   = I.size . C.getColumnMap baseAI $ csm
   targetColumnNum = I.size . C.getColumnMap targetAI $ csm
   theViewGroup =
